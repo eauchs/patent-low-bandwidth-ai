@@ -1,9 +1,7 @@
 # 🚀 HYBRID-ADVANCED
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
-
-## 🌟 Présentation
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ## 🌟 Présentation
 
 HYBRID-ADVANCED est un projet combinant un serveur Flask pour un modèle de langage visuel (VLM) et une application Flask principale intégrant diverses fonctionnalités d'IA, telles que l'extraction de texte à partir d'images et de PDFs via un VLM local (SmolDocling), la recherche de documents pertinents (RAG) avec ChromaDB, la récupération d'informations de Wikipédia et la gestion de l'historique des conversations, et la possibilité de converser par SMS avec le backend. La génération de texte finale est gérée par un serveur VLM dédié.
 
@@ -14,9 +12,9 @@ Ce projet offre une architecture modulaire pour interagir avec des modèles de l
 * **Serveur de Modèle de Langage Visuel (VLM) :**
     * Chargement à la demande de modèles VLM (actuellement configuré pour Mistral Small).
     * Génération de texte conditionnée par un prompt et une image (optionnelle).
-    * API simple basée sur Flask pour interagir avec le modèle.
+    * API simple basée sur Flask pour interagir avec le modèle (`api.py`).
 * **Application Principale :**
-    * **Extraction de Texte Avancée :** Utilisation locale de SmolDocling pour extraire le texte d'images et de fichiers PDF.
+    * **Extraction de Texte Avancée :** Utilisation locale de SmolDocling pour extraire le texte d'images et de fichiers PDF (`main-backend.py`).
     * **Récupération Augmentée par la Génération (RAG) :** Recherche de documents pertinents dans une base de connaissances ChromaDB.
     * **Intégration Wikipédia :** Récupération de contexte pertinent à partir de Wikipédia.
     * **Gestion de l'Historique :** Suivi de l'historique des conversations via ChromaDB.
@@ -40,7 +38,7 @@ Assurez-vous d'avoir les logiciels suivants installés :
 1.  **Cloner le Répertoire :**
 
     ```bash
-    git clone https://github.com/eauchs/hybrid-advanced.git
+    git clone [https://github.com/eauchs/hybrid-advanced.git](https://github.com/eauchs/hybrid-advanced.git)
     cd hybrid-advanced
     ```
 
@@ -55,22 +53,20 @@ Assurez-vous d'avoir les logiciels suivants installés :
 3.  **Installer les Dépendances :**
 
     ```bash
-    # Pour le serveur VLM (exécuter dans le répertoire contenant vlmserver.py)
-    cd server
+    # Pour le serveur VLM (exécuter dans le répertoire contenant api.py)
+    cd api
     pip install -r requirements.txt
     cd ..
 
     # Pour l'application principale (exécuter dans le répertoire racine du projet)
-    cd hybrid-advanced
     pip install -r requirements.txt
-    cd ..
     ```
 
 4.  **Configuration :**
 
-    * Créez un fichier `.env` dans le répertoire racine de chaque application (serveur VLM et application principale) et configurez les variables d'environnement nécessaires. Voici un exemple de variables que vous pourriez avoir besoin de configurer :
+    * Créez un fichier `.env` dans le répertoire racine de chaque application et configurez les variables d'environnement nécessaires. Voici un exemple de variables que vous pourriez avoir besoin de configurer :
 
-        **Pour le serveur VLM (`server/.env`) :**
+        **Pour le serveur VLM (`./api/.env`) :**
 
         ```env
         VLM_MODEL_PATH="mlx-community/Mistral-Small-3.1-24B-Instruct-2503-3bit"
@@ -78,7 +74,7 @@ Assurez-vous d'avoir les logiciels suivants installés :
         SERVER_PORT=5001
         ```
 
-        **Pour l'application principale (`main_app_hybrid/.env`) :**
+        **Pour l'application principale (`./.env`) :**
 
         ```env
         TEMP_FOLDER="/tmp"
@@ -114,8 +110,8 @@ Assurez-vous d'avoir les logiciels suivants installés :
 1.  **Démarrer le Serveur VLM :**
 
     ```bash
-    cd server
-    python server.py
+    cd api
+    python api.py
     ```
 
     Le serveur devrait démarrer sur `http://0.0.0.0:5001` (ou l'adresse et le port configurés).
@@ -123,8 +119,7 @@ Assurez-vous d'avoir les logiciels suivants installés :
 2.  **Démarrer l'Application Principale :**
 
     ```bash
-    cd main_app_hybrid
-    python main_app_hybrid.py
+    python main-backend.py
     ```
 
     L'application principale devrait démarrer sur `http://0.0.0.0:500` (par défaut).
@@ -140,28 +135,19 @@ Décrivez ici comment interagir avec votre application. Par exemple :
 
 ```json
 {
-  "conversations": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "text", "text": "Quel est le contenu de cette image ?" }
-      ]
+    "conversations": [
+        {
+            "role": "user",
+            "content": [
+                { "type": "text", "text": "Quel est le contenu de cette image ?" }
+            ]
+        }
+    ],
+    "file_data": "...", // Votre image en base64
+    "file_name": "image.png",
+    "options": {
+        "document": true,
+        "rag": false,
+        "wikipedia": false
     }
-  ],
-  "file_data": "...", // Votre image en base64
-  "file_name": "image.png",
-  "options": {
-    "document": true,
-    "rag": false,
-    "wikipedia": false
-  }
 }
-
-{
-  "prompt": "Décrivez cette image.",
-  "image_base64": "...", // Votre image en base64 (optionnel)
-  "max_tokens": 256,
-  "temperature": 0.7
-}
-
-# hybrid-advanced
