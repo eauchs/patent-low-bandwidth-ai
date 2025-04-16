@@ -1,7 +1,9 @@
 # 🚀 HYBRID-ADVANCED
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ## 🌟 Présentation
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
+
+## 🌟 Présentation
 
 HYBRID-ADVANCED est un projet combinant un serveur Flask pour un modèle de langage visuel (VLM) et une application Flask principale intégrant diverses fonctionnalités d'IA, telles que l'extraction de texte à partir d'images et de PDFs via un VLM local (SmolDocling), la recherche de documents pertinents (RAG) avec ChromaDB, la récupération d'informations de Wikipédia et la gestion de l'historique des conversations, et la possibilité de converser par SMS avec le backend. La génération de texte finale est gérée par un serveur VLM dédié.
 
