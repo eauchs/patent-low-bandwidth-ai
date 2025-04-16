@@ -1,7 +1,8 @@
 # 🚀 HYBRID-ADVANCED
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ## 🌟 Présentation
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
+## 🌟 Présentation
 
 HYBRID-ADVANCED est un projet combinant un serveur Flask pour un modèle de langage visuel (VLM) et une application Flask principale intégrant diverses fonctionnalités d'IA, telles que l'extraction de texte à partir d'images et de PDFs via un VLM local (SmolDocling), la recherche de documents pertinents (RAG) avec ChromaDB, la récupération d'informations de Wikipédia et la gestion de l'historique des conversations, et la possibilité de converser par SMS avec le backend. La génération de texte finale est gérée par un serveur VLM dédié.
 
@@ -38,7 +39,7 @@ Assurez-vous d'avoir les logiciels suivants installés :
 1.  **Cloner le Répertoire :**
 
     ```bash
-    git clone [https://github.com/eauchs/hybrid-advanced.git](https://github.com/eauchs/hybrid-advanced.git)
+    git clone https://github.com/eauchs/hybrid-advanced.git
     cd hybrid-advanced
     ```
 
@@ -103,7 +104,6 @@ Assurez-vous d'avoir les logiciels suivants installés :
         PDF_CONVERT_TIMEOUT=120
         ```
 
-        **Note :** Ajustez les chemins et les valeurs en fonction de votre configuration.
 
 ### Exécution
 
@@ -126,7 +126,6 @@ Assurez-vous d'avoir les logiciels suivants installés :
 
 ## ⚙️ Utilisation
 
-Décrivez ici comment interagir avec votre application. Par exemple :
 
 * Pour interagir avec l'application principale, vous pouvez envoyer des requêtes POST à l'endpoint `/api/generate` avec un payload JSON contenant l'historique des conversations, les données de fichier (optionnel) et les options de traitement (RAG, Wikipédia, document).
 * Pour le serveur VLM, vous pouvez envoyer des requêtes POST à `/api/vlm_generate` avec un prompt et une image base64 (optionnelle) pour obtenir une réponse textuelle.
