@@ -1,9 +1,9 @@
-# 🚀 [Nom de Votre Projet VLM]
+# 🚀 HYBRID-ADVANCED
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ## 🌟 Présentation
 
-[Nom de Votre Projet VLM] est un projet combinant un serveur Flask pour un modèle de langage visuel (VLM) et une application Flask principale intégrant diverses fonctionnalités d'IA, telles que l'extraction de texte à partir d'images et de PDFs via un VLM local (SmolDocling), la recherche de documents pertinents (RAG) avec ChromaDB, la récupération d'informations de Wikipédia et la gestion de l'historique des conversations, et la possibilité de converser par SMS avec le backend. La génération de texte finale est gérée par un serveur VLM dédié.
+HYBRID-ADVANCED est un projet combinant un serveur Flask pour un modèle de langage visuel (VLM) et une application Flask principale intégrant diverses fonctionnalités d'IA, telles que l'extraction de texte à partir d'images et de PDFs via un VLM local (SmolDocling), la recherche de documents pertinents (RAG) avec ChromaDB, la récupération d'informations de Wikipédia et la gestion de l'historique des conversations, et la possibilité de converser par SMS avec le backend. La génération de texte finale est gérée par un serveur VLM dédié.
 
 Ce projet offre une architecture modulaire pour interagir avec des modèles de langage visuel, permettant des applications allant de la question-réponse basée sur des images et des documents à des systèmes de dialogue plus complexes.
 
