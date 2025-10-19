@@ -1,136 +1,126 @@
-# 🚀 HYBRID-ADVANCED
 
-[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
-## 🌟 Présentation
+# 🚀 Stateful AI for Low-Bandwidth Networks (Patent Backend)
 
-HYBRID-ADVANCED est un projet combinant un serveur Flask pour un modèle de langage visuel (VLM) et une application Flask principale intégrant diverses fonctionnalités d'IA, telles que l'extraction de texte à partir d'images et de PDFs via un VLM local (SmolDocling), la recherche de documents pertinents (RAG) avec ChromaDB, la récupération d'informations de Wikipédia et la gestion de l'historique des conversations, et la possibilité de converser par SMS avec le backend. La génération de texte finale est gérée par un serveur VLM dédié.
+This repository contains the backend implementation for my patent, "System and Method for Stateful, Contextual AI Communication over Low-Bandwidth Networks" (Filed: FR2511116).
 
-Ce projet offre une architecture modulaire pour interagir avec des modèles de langage visuel, permettant des applications allant de la question-réponse basée sur des images et des documents à des systèmes de dialogue plus complexes.
+It's a complete, hybrid AI backend that allows for complex, stateful conversations (RAG, document analysis, web search) over low-bandwidth protocols like **SMS**.
 
-## 🛠️ Fonctionnalités Clés
+## 🌟 Project Goal
 
-* **Serveur de Modèle de Langage Visuel (VLM) :**
-    * Chargement à la demande de modèles VLM (actuellement configuré pour Mistral Small).
-    * Génération de texte conditionnée par un prompt et une image (optionnelle).
-    * API simple basée sur Flask pour interagir avec le modèle (`api.py`).
-* **Application Principale :**
-    * **Extraction de Texte Avancée :** Utilisation locale de SmolDocling pour extraire le texte d'images et de fichiers PDF (`main-backend.py`).
-    * **Récupération Augmentée par la Génération (RAG) :** Recherche de documents pertinents dans une base de connaissances ChromaDB.
-    * **Intégration Wikipédia :** Récupération de contexte pertinent à partir de Wikipédia.
-    * **Gestion de l'Historique :** Suivi de l'historique des conversations via ChromaDB.
-    * **Génération de Texte Externe :** Utilisation d'un serveur Flask dédié pour la génération de texte finale, offrant une séparation des responsabilités et une flexibilité potentielle pour différents modèles de langage.
-    * **API RESTful :** Exposition des fonctionnalités via des API Flask claires et documentées.
+The core innovation is to provide advanced AI capabilities (like RAG and VLM analysis) to users without high-speed internet.
 
-## 🚀 Démarrage
+The system works by:
 
-Suivez ces étapes pour configurer et exécuter le projet sur votre machine.
+1.  Receiving a query via a low-bandwidth channel (e.g., an SMS via Android Automate).
+2.  Using this backend (`main-backend.py`) to perform all heavy lifting: RAG, document extraction, history retrieval, and context augmentation.
+3.  Sending the compiled context + prompt to a dedicated LLM generation server (`api.py`).
+4.  Receiving the final answer and sending it back to the user via SMS.
 
-### Prérequis
+This architecture decouples perception/RAG (local) from generation (server) and enables stateful conversations over a stateless protocol.
 
-Assurez-vous d'avoir les logiciels suivants installés :
+## 🛠️ Key Features
 
-* [Python 3.x](https://www.python.org/downloads/)
-* [pip](https://pip.pypa.io/en/stable/installing/) (installé avec Python)
-* [Git](https://git-scm.com/downloads)
+  * **Hybrid Architecture:** The system is split into two main services:
+    1.  **Main Backend (`main-backend.py`):** The "brain." It runs RAG, embedding, reranking, and document extraction. It manages all application logic.
+    2.  **VLM/Generation Server (`api.py`):** A decoupled Flask server that hosts the primary generation model (e.g., Mistral Small). This `main-backend` calls this server *only* for the final text generation, separating responsibilities.
+  * **SMS Integration:** Includes a `/api/sms_query` endpoint designed to receive requests from apps like **Automate (Android)**, manage conversation history per-user (by sender number), and return a simple text reply.
+  * **Stateful SMS History:** Uses **ChromaDB** to create a persistent, vector-searched conversation history for *each* SMS user, allowing for follow-up questions.
+  * **Advanced RAG Pipeline:**
+      * **Document Extraction:** Uses a local VLM (**SmolDocling**) to extract text from images and PDFs.
+      * **Vector Storage:** Uses **ChromaDB** for RAG document collection.
+      * **Embedding:** Uses `ibm-granite/granite-embedding-278m-multilingual`.
+      * **Reranking:** Uses `ibm-research/re2g-reranker-nq` to refine RAG results.
+  * **Context Augmentation:** Can dynamically pull context from **Wikipedia** in addition to the RAG database and conversation history.
+
+## 🚀 Getting Started
+
+Follow these steps to configure and run the project.
+
+### Prerequisites
+
+  * Python 3.x
+  * Git
+  * Poppler (for `pdf2image` functionality)
+  * For Apple Silicon (MLX models): `pip install mlx-vlm`
 
 ### Installation
 
-1.  **Cloner le Répertoire :**
+1.  **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/eauchs/hybrid-advanced.git
-    cd hybrid-advanced
+    git clone https://github.com/eauchs/patent-low-bandwidth-ai.git
+    cd patent-low-bandwidth-ai
     ```
 
-2.  **Créer et Activer un Environnement Virtuel (Recommandé) :**
+2.  **Create & Activate Virtual Environments (Recommended):**
 
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # Sur Linux/macOS
-    # venv\Scripts\activate  # Sur Windows
+    # For the main backend
+    python3 -m venv venv_main
+    source venv_main/bin/activate
+    pip install -r requirements.txt # (Note: You need to create this file)
+
+    # For the VLM API server
+    python3 -m venv venv_api
+    source venv_api/bin/activate
+    pip install -r api/requirements.txt # (Note: You need to create this file)
     ```
 
-3.  **Installer les Dépendances :**
+3.  **Configuration:**
+    Create a `.env` file in the root directory for `main-backend.py` and another in the `api/` directory for `api.py`.
 
-    ```bash
-    # Pour le serveur VLM (exécuter dans le répertoire contenant api.py)
-    cd api
-    pip install -r requirements.txt
-    cd ..
+    **For VLM Server (`./api/.env`):**
 
-    # Pour l'application principale (exécuter dans le répertoire racine du projet)
-    pip install -r requirements.txt
+    ```
+    VLM_MODEL_PATH="mlx-community/Mistral-Small-3.1-24B-Instruct-2503-3bit"
+    VLM_SERVER_HOST="0.0.0.0"
+    VLM_SERVER_PORT=5001
     ```
 
-4.  **Configuration :**
+    **For Main Backend (`./.env`):**
 
-    * Créez un fichier `.env` dans le répertoire racine de chaque application et configurez les variables d'environnement nécessaires. Voici un exemple de variables que vous pourriez avoir besoin de configurer :
+    ```
+    # Paths & Models
+    CHROMA_DB_PATH="chromadb_base"
+    EMBEDDING_MODEL_NAME="ibm-granite/granite-embedding-278m-multilingual"
+    RERANKER_MODEL_NAME="ibm-research/re2g-reranker-nq"
+    SMOL_VLM_MODEL_PATH="ds4sd/SmolDocling-256M-preview-mlx-bf16"
 
-        **Pour le serveur VLM (`./api/.env`) :**
+    # Endpoint for the VLM/Text server
+    TEXT_GENERATION_SERVER_ENDPOINT="http://localhost:5001/api/vlm_generate"
 
-        ```env
-        VLM_MODEL_PATH="mlx-community/Mistral-Small-3.1-24B-Instruct-2503-3bit"
-        SERVER_HOST="0.0.0.0"
-        SERVER_PORT=5001
-        ```
+    # RAG & Context Params
+    WIKIPEDIA_LANG="fr"
+    RAG_N_RESULTS=15
+    RAG_TOP_K_RERANKED=10
+    SMS_HISTORY_RAG_N_RESULTS=10
+    ```
 
-        **Pour l'application principale (`./.env`) :**
+### Execution
 
-        ```env
-        TEMP_FOLDER="/tmp"
-        CHROMA_DB_PATH="chromadb_base"
-        CHROMA_COLLECTION_NAME="my_collection"
-        CHROMA_SMS_HISTORY_COLLECTION_NAME="sms_history_collection"
-        EMBEDDING_MODEL_NAME="ibm-granite/granite-embedding-278m-multilingual"
-        RERANKER_MODEL_NAME="ibm-research/re2g-reranker-nq"
-        SMOL_VLM_MODEL_PATH="ds4sd/SmolDocling-256M-preview-mlx-bf16" # Si vous utilisez SmolDocling localement
-        TEXT_GENERATION_SERVER_ENDPOINT="http://localhost:5001/api/vlm_generate"
-        REQUEST_TIMEOUT=1000
-        SMOL_VLM_MAX_TOKENS=1024
-        SMOL_VLM_TEMPERATURE=0.0
-        WIKIPEDIA_LANG="fr"
-        WIKIPEDIA_MAX_CHARS=8000
-        RAG_N_RESULTS=15
-        RAG_MIN_TOKEN_COUNT=10
-        RAG_TOP_K_RERANKED=10
-        CONTEXT_MAX_CHARS_DOCUMENT=6000
-        CONTEXT_MAX_CHARS_RAG=10000
-        CONTEXT_MAX_CHARS_WIKI=4000
-        SMS_HISTORY_RAG_N_RESULTS=10
-        CONTEXT_MAX_CHARS_SMS_HISTORY=5000
-        PDF_MAX_PAGES=10
-        PDF_DPI=200
-        PDF_CONVERT_TIMEOUT=120
-        ```
-
-
-### Exécution
-
-1.  **Démarrer le Serveur VLM :**
+1.  **Start the VLM / Text Generation Server:**
 
     ```bash
-    cd api
+    source venv_api/bin/activate
     python api.py
     ```
 
-    Le serveur devrait démarrer sur `http://0.0.0.0:5001` (ou l'adresse et le port configurés).
+    (The server will start on `http://0.0.0.0:5001`)
 
-2.  **Démarrer l'Application Principale :**
+2.  **Start the Main Backend Server:**
 
     ```bash
+    source venv_main/bin/activate
     python main-backend.py
     ```
 
-    L'application principale devrait démarrer sur `http://0.0.0.0:500` (par défaut).
+    (The main application will start on `http://0.0.0.0:500`)
 
-## ⚙️ Utilisation
+## ⚙️ API Usage
 
+### `/api/generate` (Main Endpoint)
 
-* Pour interagir avec l'application principale, vous pouvez envoyer des requêtes POST à l'endpoint `/api/generate` avec un payload JSON contenant l'historique des conversations, les données de fichier (optionnel) et les options de traitement (RAG, Wikipédia, document).
-* Pour le serveur VLM, vous pouvez envoyer des requêtes POST à `/api/vlm_generate` avec un prompt et une image base64 (optionnelle) pour obtenir une réponse textuelle.
-
-**Exemple de requête à l'application principale (`/api/generate`) :**
+Send a POST request with JSON payload for RAG/Document-based queries.
 
 ```json
 {
@@ -138,11 +128,11 @@ Assurez-vous d'avoir les logiciels suivants installés :
         {
             "role": "user",
             "content": [
-                { "type": "text", "text": "Quel est le contenu de cette image ?" }
+                { "type": "text", "text": "What is the content of this image?" }
             ]
         }
     ],
-    "file_data": "...", // Votre image en base64
+    "file_data": "...", // base64 encoded image
     "file_name": "image.png",
     "options": {
         "document": true,
@@ -150,3 +140,20 @@ Assurez-vous d'avoir les logiciels suivants installés :
         "wikipedia": false
     }
 }
+```
+
+### `/api/sms_query` (Patent Endpoint)
+
+Send a `x-www-form-urlencoded` POST request (simulating an Android Automate webhook).
+
+  * `sender`: The phone number (e.g., "+33612345678")
+  * `message`: The user's text query (e.g., "What was the last thing I asked you?")
+
+The backend will automatically find this user's vector history, perform RAG, get a response, and return it as simple JSON.
+
+```json
+{
+    "reply": "You previously asked me about the contents of a PDF document."
+}
+```
+
