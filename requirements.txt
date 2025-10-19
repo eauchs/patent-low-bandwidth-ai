@@ -1,0 +1,14 @@
+flask
+flask_cors
+torch
+Pillow
+sentence-transformers
+transformers
+chromadb
+pdf2image
+mlx_vlm
+docling_core
+wikipedia
+python-dotenv
+requests
+mlx_vlm
